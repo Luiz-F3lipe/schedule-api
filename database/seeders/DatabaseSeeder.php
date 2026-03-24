@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Database\Seeders;
 
 use App\Models\Department;
+use App\Models\Product;
 use App\Models\System;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -41,7 +42,7 @@ class DatabaseSeeder extends Seeder
 
         // Create a test user
         User::factory()->create([
-            'id_department' => $departments[0]->id, // Assign to the first department
+            'department_id' => $departments[0]->id, // Assign to the first department
             'name'          => 'Test User',
             'email'         => 'test@example.com',
         ]);
@@ -82,7 +83,8 @@ class DatabaseSeeder extends Seeder
             $system = System::where('description', $product['system'])->first();
 
             if ($system) {
-                $system->products()->create([
+                Product::factory()->create([
+                    'system_id'   => $system->id,
                     'description' => $product['product'],
                 ]);
             }
