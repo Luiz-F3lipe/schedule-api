@@ -15,7 +15,7 @@ return new class () extends Migration
      */
     public function up(): void
     {
-        Schema::create('passwords', function (Blueprint $table) {
+        Schema::create('passwords', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(Department::class)->nullable()->constrained();
             $table->foreignIdFor(Product::class)->nullable()->constrained()->cascadeOnDelete();
