@@ -2,11 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Department;
 
-use App\Http\Requests\StoreDepartmentRequest;
-use App\Http\Requests\UpdateDepartmentRequest;
-use App\Http\Resources\DepartmentResource;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Department\StoreDepartmentRequest;
+use App\Http\Requests\Department\UpdateDepartmentRequest;
+use App\Http\Resources\Department\DepartmentResource;
 use App\Models\Department;
 
 class DepartmentController extends Controller

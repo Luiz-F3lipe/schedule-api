@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\Department\DepartmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn (): array => [config('app.name')]);
