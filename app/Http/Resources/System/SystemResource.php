@@ -2,12 +2,12 @@
 
 declare(strict_types = 1);
 
-namespace App\Http\Resources\Department;
+namespace App\Http\Resources\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DepartmentResource extends JsonResource
+class SystemResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +19,6 @@ class DepartmentResource extends JsonResource
         return [
             'id'          => $this->id,
             'description' => $this->description,
-            'active'      => $this->active,
         ];
     }
 }

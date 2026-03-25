@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace App\Http\Requests\System;
+
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreSystemRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'description' => ['required', 'string', 'min:3', 'max:25'],
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'description.required' => 'O campo de descrição é obrigatório.',
+            'description.string'   => 'O campo de descrição deve ser uma string.',
+            'description.min'      => 'O campo de descrição deve ter pelo menos 3 caracteres.',
+            'description.max'      => 'O campo de descrição não pode ter mais de 25 caracteres.',
+        ];
+    }
+}
