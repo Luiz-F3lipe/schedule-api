@@ -5,6 +5,7 @@ declare(strict_types = 1);
 use App\Http\Controllers\Department\DepartmentController;
 use App\Http\Controllers\Password\PasswordController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\ScheduleStatus\ScheduleStatusController;
 use App\Http\Controllers\System\SystemController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,11 @@ Route::prefix('passwords')->name('passwords.')->group(function (): void {
     Route::post('/', [PasswordController::class, 'store'])->name('store');
     Route::get('/{password}', [PasswordController::class, 'show'])->name('show');
     Route::put('/{password}', [PasswordController::class, 'update'])->name('update');
+});
+
+Route::prefix('schedule-status')->name('schedule-status.')->group(function (): void {
+    Route::get('/', [ScheduleStatusController::class, 'index'])->name('index');
+    Route::post('/', [ScheduleStatusController::class, 'store'])->name('store');
+    Route::get('/{scheduleStatus}', [ScheduleStatusController::class, 'show'])->name('show');
+    Route::put('/{scheduleStatus}', [ScheduleStatusController::class, 'update'])->name('update');
 });
