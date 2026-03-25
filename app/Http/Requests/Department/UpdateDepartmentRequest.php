@@ -33,6 +33,7 @@ class UpdateDepartmentRequest extends FormRequest
     * Get the error messages for the defined validation rules.
     * @return array<string, string>
     */
+    #[\Override]
     public function messages(): array
     {
         return [
