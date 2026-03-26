@@ -5,6 +5,7 @@ declare(strict_types = 1);
 use App\Http\Controllers\Department\DepartmentController;
 use App\Http\Controllers\Password\PasswordController;
 use App\Http\Controllers\Product\ProductController;
+use App\Http\Controllers\Schedule\ScheduleController;
 use App\Http\Controllers\ScheduleStatus\ScheduleStatusController;
 use App\Http\Controllers\System\SystemController;
 use Illuminate\Support\Facades\Route;
@@ -42,4 +43,12 @@ Route::prefix('schedule-status')->name('schedule-status.')->group(function (): v
     Route::post('/', [ScheduleStatusController::class, 'store'])->name('store');
     Route::get('/{scheduleStatus}', [ScheduleStatusController::class, 'show'])->name('show');
     Route::put('/{scheduleStatus}', [ScheduleStatusController::class, 'update'])->name('update');
+});
+
+Route::prefix('schedules')->name('schedules.')->group(function (): void {
+    Route::get('/', [ScheduleController::class, 'index'])->name('index');
+    Route::post('/', [ScheduleController::class, 'store'])->name('store');
+    Route::get('/{schedule}', [ScheduleController::class, 'show'])->name('show');
+    Route::put('/{schedule}', [ScheduleController::class, 'update'])->name('update');
+    Route::patch('/{schedule}/cancel', [ScheduleController::class, 'cancel'])->name('cancel');
 });
