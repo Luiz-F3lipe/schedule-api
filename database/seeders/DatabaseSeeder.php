@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Database\Seeders;
 
 use App\Models\Department;
+use App\Models\Permission;
 use App\Models\Product;
 use App\Models\System;
 use App\Models\User;
@@ -20,6 +21,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed permissions first
+        $this->call(PermissionSeeder::class);
+
         // Create default departments
         $default_departments = [
             'Desenvolvimento',
@@ -38,6 +42,30 @@ class DatabaseSeeder extends Seeder
                 'description' => $department,
                 'active'      => true,
             ]);
+        }
+
+        // Assign permissions to departments
+        $adminDepartment   = Department::where('description', 'Administrador')->first();
+        $devDepartment     = Department::where('description', 'Desenvolvimento')->first();
+        $supportDepartment = Department::where('description', 'Suporte')->first();
+
+        // Admin gets all permissions
+        if ($adminDepartment) {
+            $allPermissions = Permission::all();
+            $adminDepartment->permissions()->attach($allPermissions->pluck('id'));
+        }
+
+        // Dev gets permissions for all resources except user management
+        if ($devDepartment) {
+            $devPermissions = Permission::whereIn('resource', ['department', 'product', 'schedule_status', 'system', 'schedule', 'password'])
+                ->get();
+            $devDepartment->permissions()->attach($devPermissions->pluck('id'));
+        }
+
+        // Support gets only list and show permissions
+        if ($supportDepartment) {
+            $supportPermissions = Permission::whereIn('action', ['list', 'show'])->get();
+            $supportDepartment->permissions()->attach($supportPermissions->pluck('id'));
         }
 
         // Create a test user
