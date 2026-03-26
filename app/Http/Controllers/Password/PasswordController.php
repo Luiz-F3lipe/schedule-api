@@ -16,7 +16,16 @@ class PasswordController extends Controller
     public function index()
     {
         return PasswordResource::collection(
-            Password::all()
+            Password::query()
+                ->when(
+                    str(request()->string('with', ''))->contains('departments'),
+                    fn ($query) => $query->with('department')
+                )
+                ->when(
+                    str(request()->string('with', ''))->contains('products'),
+                    fn ($query) => $query->with('product')
+                )
+                ->get()
         );
     }
 

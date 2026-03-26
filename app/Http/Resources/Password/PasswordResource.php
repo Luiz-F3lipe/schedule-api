@@ -22,8 +22,8 @@ class PasswordResource extends JsonResource
         return [
             'id'          => $this->id,
             'description' => $this->description,
-            'department'  => DepartmentResource::make($this->department),
-            'product'     => ProductResource::make($this->product),
+            'department'  => DepartmentResource::make($this->whenLoaded('department')),
+            'product'     => ProductResource::make($this->whenLoaded('product')),
         ];
     }
 }
