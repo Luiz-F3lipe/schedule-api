@@ -61,9 +61,7 @@ Route::group(['middleware' => 'auth:sanctum'], function (): void {
         });
 
     Route::prefix('user')->name('user.')->group(function (): void {
-        Route::get('/me', function (Request $request) {
-            return $request->user();
-        });
+        Route::get('/me', fn (Request $request) => $request->user());
 
         Route::get('/', [UserController::class, 'index'])->name('index')->middleware('permission:user,list');
         Route::post('/', [UserController::class, 'store'])->name('store')->middleware('permission:user,create');

@@ -29,7 +29,7 @@ class PermissionFactory extends Factory
         $action   = fake()->randomElement($actions);
 
         return [
-            'name'     => "{$action}_{$resource}",
+            'name'     => sprintf('%s_%s', $action, $resource),
             'resource' => $resource,
             'action'   => $action,
         ];

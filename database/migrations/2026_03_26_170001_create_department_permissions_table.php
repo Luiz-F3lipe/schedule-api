@@ -10,7 +10,7 @@ return new class () extends Migration
 {
     public function up(): void
     {
-        Schema::create('department_permissions', function (Blueprint $table) {
+        Schema::create('department_permissions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('department_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');

@@ -35,7 +35,7 @@ class PermissionSeeder extends Seeder
         foreach ($resources as $resource) {
             foreach ($actions as $action) {
                 Permission::create([
-                    'name'     => "{$action}_{$resource}",
+                    'name'     => sprintf('%s_%s', $action, $resource),
                     'resource' => $resource,
                     'action'   => $action,
                 ]);

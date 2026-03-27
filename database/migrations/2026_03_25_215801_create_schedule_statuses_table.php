@@ -13,7 +13,7 @@ return new class () extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedule_status', function (Blueprint $table) {
+        Schema::create('schedule_status', function (Blueprint $table): void {
             $table->id();
             $table->string('description', 30)->unique();
             $table->string('color', 7);

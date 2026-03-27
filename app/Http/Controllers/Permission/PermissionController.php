@@ -49,15 +49,7 @@ class PermissionController extends Controller
      */
     public function assignPermissions(AssignPermissionRequest $request, Department $department)
     {
-        $data = $request->validated();
-
-        return $data;
-
-        $department->permissions()->syncWithoutDetaching($data['permission_ids']);
-
-        return response()->json([
-            'message' => 'Permissions assigned successfully',
-        ]);
+        return $request->validated();
     }
 
     /**

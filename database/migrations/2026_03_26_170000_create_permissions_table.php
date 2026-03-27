@@ -10,7 +10,7 @@ return new class () extends Migration
 {
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table): void {
             $table->id();
             $table->string('name'); // create_department, edit_product, etc
             $table->string('resource'); // department, product, schedule_status, system, user

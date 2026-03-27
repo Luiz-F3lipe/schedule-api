@@ -34,6 +34,7 @@ class SyncPermissionRequest extends FormRequest
      *
      * @return array<string, string>
      */
+    #[\Override]
     public function messages(): array
     {
         return [
