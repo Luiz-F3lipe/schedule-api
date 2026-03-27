@@ -9,6 +9,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Schedule\ScheduleController;
 use App\Http\Controllers\ScheduleStatus\ScheduleStatusController;
 use App\Http\Controllers\System\SystemController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,18 +49,25 @@ Route::group(['middleware' => 'auth:sanctum'], function (): void {
         Route::put('/{scheduleStatus}', [ScheduleStatusController::class, 'update'])->name('update')->middleware('permission:schedule_status,edit');
     });
 
-    Route::prefix('schedules')->name('schedules.')->group(function (): void {
-        Route::get('/', [ScheduleController::class, 'index'])->name('index')->middleware('permission:schedule,list');
-        Route::post('/', [ScheduleController::class, 'store'])->name('store')->middleware('permission:schedule,create');
-        Route::get('/{schedule}', [ScheduleController::class, 'show'])->name('show')->middleware('permission:schedule,show');
-        Route::put('/{schedule}', [ScheduleController::class, 'update'])->name('update')->middleware('permission:schedule,edit');
-        Route::patch('/{schedule}/cancel', [ScheduleController::class, 'cancel'])->name('cancel')->middleware('permission:schedule,edit');
-    });
+    Route::prefix('schedules')
+        ->name('schedules.')
+        // ->middleware('can:own,schedule')
+        ->group(function (): void {
+            Route::get('/', [ScheduleController::class, 'index'])->name('index')->middleware('permission:schedule,list');
+            Route::post('/', [ScheduleController::class, 'store'])->name('store')->middleware('permission:schedule,create');
+            Route::get('/{schedule}', [ScheduleController::class, 'show'])->name('show')->middleware('permission:schedule,show');
+            Route::put('/{schedule}', [ScheduleController::class, 'update'])->name('update')->middleware('permission:schedule,edit');
+            Route::patch('/{schedule}/cancel', [ScheduleController::class, 'cancel'])->name('cancel')->middleware('permission:schedule,edit');
+        });
 
     Route::prefix('user')->name('user.')->group(function (): void {
         Route::get('/me', function (Request $request) {
             return $request->user();
         });
+
+        Route::get('/', [UserController::class, 'index'])->name('index')->middleware('permission:user,list');
+        Route::post('/', [UserController::class, 'store'])->name('store')->middleware('permission:user,create');
+        Route::get('/{user}', [UserController::class, 'show'])->name('show')->middleware('permission:user,show');
     });
 
     Route::prefix('permissions')->name('permissions.')->group(function (): void {

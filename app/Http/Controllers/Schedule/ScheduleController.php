@@ -11,6 +11,7 @@ use App\Http\Requests\Schedule\UpdateScheduleRequest;
 use App\Http\Resources\Schedule\ScheduleDetailResource;
 use App\Http\Resources\Schedule\ScheduleResource;
 use App\Models\Schedule;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -19,6 +20,7 @@ class ScheduleController extends Controller
         return ScheduleResource::collection(
             Schedule::query()
                 ->with(['user', 'schedule_status'])
+                ->where('department_id', Auth::user()->department_id)
                 ->get()
         );
     }

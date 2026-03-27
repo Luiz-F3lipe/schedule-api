@@ -22,7 +22,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $user->tokens()->delete();
+        // revoke all tokens for the user before issuing a new one
+        // $user->tokens()->delete();
 
         return [
             'token' => $user->createToken('auth_token')->plainTextToken,
