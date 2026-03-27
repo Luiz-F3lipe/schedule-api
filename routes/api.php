@@ -58,7 +58,7 @@ Route::group(['middleware' => 'auth:sanctum'], function (): void {
 
     Route::prefix('user')->name('user.')->group(function (): void {
         Route::get('/me', function (Request $request) {
-            return $request->user()->load('department.permissions');
+            return $request->user();
         });
     });
 
