@@ -9,7 +9,6 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -18,9 +17,9 @@ class AuthController extends Controller
         $user = User::firstWhere('email', $request->email);
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 401);
         }
 
         $user->tokens()->delete();
