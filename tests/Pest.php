@@ -146,3 +146,22 @@ function createSystem(string $description = 'Test System'): int
 
     return $response->json('data.id');
 }
+
+/**
+ * Helper functio to create a product and return its ID
+ *
+ * @return int The ID of the created product
+ */
+function createProduct(string $description = 'Test Product'): int
+{
+    $systemId = createSystem();
+
+    $response = postJson('/products', [
+        'description' => $description,
+        'system_id'   => $systemId,
+    ]);
+
+    $response->assertStatus(201);
+
+    return $response->json('data.id');
+}
