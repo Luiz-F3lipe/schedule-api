@@ -1,59 +1,35 @@
 FROM php:8.4-fpm
 
-# Argumentos de build
-ARG user=laravel
-ARG uid=1000
-
-# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
-    git \
-    curl \
+    build-essential \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
     unzip \
+    curl \
+    git \
+    vim \
     libzip-dev \
     sqlite3 \
-    libsqlite3-dev \
-    nginx \
-    supervisor
+    libsqlite3-dev
 
-# Limpar cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Instalar extensões PHP
-RUN docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring exif pcntl bcmath gd zip
-
-# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Criar usuário do sistema para rodar comandos do Composer e Artisan
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+COPY . /var/www/html
+COPY --chown=www-data:www-data . /var/www/html
+RUN chmod -R 755 /var/www/html
 
-# Configurar nginx
-COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+RUN cp .env.example .env
 
-# Configurar supervisor
-COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN composer install && php artisan key:generate
 
-# Definir diretório de trabalho
-WORKDIR /var/www
+RUN mkdir -p /var/www/html/database \
+    && touch /var/www/html/database/database.sqlite
 
-# Copiar arquivos do projeto
-COPY --chown=$user:$user . /var/www
+RUN php artisan migrate --force
 
-# Instalar dependências do Composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-
-# Ajustar permissões
-RUN chown -R $user:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
-# Expor porta 80
-EXPOSE 80
-
-# Comando de inicialização
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+EXPOSE 8000
+CMD php artisan serve --host=0.0.0.0 --port=8000
