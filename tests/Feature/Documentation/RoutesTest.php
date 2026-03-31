@@ -15,6 +15,17 @@ it('serves the swagger ui route', function () {
     $response->assertSee('/docs/openapi', false);
 });
 
+it('renders swagger assets over https behind a trusted proxy', function () {
+    $response = get('/docs', [
+        'x-forwarded-proto' => 'https',
+        'x-forwarded-port' => '443',
+    ]);
+
+    $response->assertOk();
+    $response->assertSee('https://localhost/docs/openapi/asset/swagger-ui.css', false);
+    $response->assertDontSee('http://localhost/docs/openapi/asset/swagger-ui.css', false);
+});
+
 it('serves the openapi document route', function () {
     $response = getJson('/docs/openapi');
 
