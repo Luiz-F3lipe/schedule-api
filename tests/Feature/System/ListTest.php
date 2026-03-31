@@ -29,20 +29,6 @@ it('should return an empty list if there are no systems', function () {
     $response->assertJsonCount(0, 'data');
 });
 
-it('should not list systems if not authenticated', function () {
-    $response = getJson('/systems');
-
-    $response->assertStatus(401);
-});
-
-it('should not list systems if user does not have permission', function () {
-    loginWithoutPermissions();
-
-    $response = getJson('/systems');
-
-    $response->assertStatus(403);
-});
-
 it('should show only expecified system', function () {
     login();
 

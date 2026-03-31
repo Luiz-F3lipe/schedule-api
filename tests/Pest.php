@@ -13,6 +13,11 @@ declare(strict_types = 1);
 */
 
 use App\Models\Department;
+use App\Models\Password;
+use App\Models\Product;
+use App\Models\Schedule;
+use App\Models\ScheduleStatus;
+use App\Models\System;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -164,4 +169,114 @@ function createProduct(string $description = 'Test Product'): int
     $response->assertStatus(201);
 
     return $response->json('data.id');
+}
+
+/**
+ * Helper function to create a schedule status and return its ID
+ *
+ * @return int The ID of the created schedule status
+ */
+function createScheduleStatus(
+    string $description = 'Test Schedule Status',
+    string $color = '#FF0000',
+    bool $active = true
+): int
+{
+    $response = postJson('/schedule-status', [
+        'description' => $description,
+        'color'       => $color,
+        'active'      => $active,
+    ]);
+
+    $response->assertStatus(201);
+
+    return $response->json('data.id');
+}
+
+/**
+ * Helper function to create a department and return its ID.
+ *
+ * @return int The ID of the created department
+ */
+function createDepartment(string $description = 'Test Department', bool $active = true): int
+{
+    return Department::query()->create([
+        'description' => $description,
+        'active'      => $active,
+    ])->id;
+}
+
+/**
+ * Helper function to create a user and return its ID.
+ *
+ * @return int The ID of the created user
+ */
+function createUser(string $name = 'Test User', ?string $email = null, ?int $departmentId = null): int
+{
+    return User::query()->create([
+        'name'          => $name,
+        'email'         => $email ?? sprintf('user-%s@example.com', uniqid()),
+        'password'      => 'password',
+        'department_id' => $departmentId ?? createDepartment(),
+    ])->id;
+}
+
+/**
+ * Helper function to create a password and return its ID.
+ *
+ * @return int The ID of the created password
+ */
+function createPassword(
+    string $description = 'Test Password',
+    string $password = 'secret123',
+    ?int $departmentId = null,
+    ?int $productId = null,
+    ?string $observation = 'Observation'
+): int
+{
+    return Password::query()->create([
+        'department_id' => $departmentId,
+        'product_id'    => $productId,
+        'description'   => $description,
+        'password'      => $password,
+        'observation'   => $observation,
+    ])->id;
+}
+
+/**
+ * Helper function to create a schedule and return its ID.
+ *
+ * @return int The ID of the created schedule
+ */
+function createSchedule(array $attributes = []): int
+{
+    $departmentId     = $attributes['department_id'] ?? createDepartment();
+    $systemId         = $attributes['system_id'] ?? System::query()->create(['description' => 'Test System'])->id;
+    $productId        = $attributes['product_id'] ?? Product::query()->create([
+        'description' => 'Test Product',
+        'system_id'   => $systemId,
+    ])->id;
+    $responsibleBy    = $attributes['responsible_by'] ?? createUser('Responsible User', null, $departmentId);
+    $createdBy        = $attributes['created_by'] ?? createUser('Creator User', null, $departmentId);
+    $scheduleStatusId = $attributes['schedule_status_id'] ?? ScheduleStatus::query()->create([
+        'description' => sprintf('Pending %s', uniqid()),
+        'color'       => '#123456',
+        'active'      => true,
+    ])->id;
+
+    unset($attributes['system_id']);
+
+    return Schedule::query()->create(array_merge([
+        'client_id'          => 123,
+        'client_name'        => 'Test Client',
+        'product_id'         => $productId,
+        'department_id'      => $departmentId,
+        'responsible_by'     => $responsibleBy,
+        'scheduled_at'       => '2026-03-31',
+        'initial_time'       => '08:00',
+        'final_time'         => '09:00',
+        'schedule_status_id' => $scheduleStatusId,
+        'description'        => 'Test schedule',
+        'created_by'         => $createdBy,
+    ], $attributes))->id;
 }

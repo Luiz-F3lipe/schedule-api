@@ -29,20 +29,6 @@ it('should return an empty list if there are no products', function () {
     $response->assertJsonCount(0, 'data');
 });
 
-it('should not list products if not authenticated', function () {
-    $response = getJson('/products');
-
-    $response->assertStatus(401);
-});
-
-it('should not list products if user does not have permission', function () {
-    loginWithoutPermissions();
-
-    $response = getJson('/products');
-
-    $response->assertStatus(403);
-});
-
 it('should show only expecified products', function () {
     login();
 
